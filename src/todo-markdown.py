@@ -41,7 +41,7 @@
 
 #   TODO: Checkout MovieDB plugin! It has manage to get about the structure I want
 
-
+import re
 import keypirinha as kp
 import keypirinha_util as kpu
 import keypirinha_net as kpnet
@@ -76,12 +76,22 @@ class todo_markdown(kp.Plugin):
     """
     
     TODO_CAT = kp.ItemCategory.USER_BASE + 10
-    ADD_TODO = kp.ItemCategory.USER_BASE + 20
+    ADD_TODO_CAT = kp.ItemCategory.USER_BASE + 20
+
+    FINISH_TODO_NAME = "finish"
+    FINISH_TODO_LABEL = "Finish the Todo"
+
+    DELETE_TODO_NAME = "delete"
+    DELETE_TODO_LABEL = "Delete the Todo"
+    
+    EDIT_TODO_NAME = "edit"
+    EDIT_TODO_LABEL = "Edit the Todo"
 
     _todos = [
             
     ]
 
+    _path_to_file = "c:\TEST\keypirinha-todo-markdown\src\lib\sample.md"
 
     def __init__(self):
         super().__init__()
@@ -143,6 +153,25 @@ class todo_markdown(kp.Plugin):
             ),
         ]
 
+        self.set_actions(self.TODO_CAT,[
+            self.create_action(
+                name=self.FINISH_TODO_NAME,
+                label=self.FINISH_TODO_LABEL,
+                short_desc="Finish the todo"
+            ),
+            self.create_action(
+                name=self.DELETE_TODO_NAME,
+                label=self.DELETE_TODO_LABEL,
+                short_desc="Deletes the todo completly"
+            ),
+            self.create_action(
+                name=self.EDIT_TODO_NAME,
+                label=self.EDIT_TODO_LABEL,
+                short_desc="Edits the todo"
+            )
+        ])
+
+
     def on_catalog(self):
         catalog = []
 
@@ -158,23 +187,18 @@ class todo_markdown(kp.Plugin):
         self.set_catalog(catalog)
 
     def on_suggest(self, user_input, items_chain):
-        
-        if items_chain == self.TODO_CAT:
-            self.dbg("items_chain", items_chain[0])
-            self.dbg("user_input", user_input)
-            self.dbg("------------")
 
 
         if not items_chain:
             return
         
-        suggestions = self._todos
+        suggestions = self._todos[:]
 
         if user_input:
             target = user_input.strip().format(q = user_input.strip())
             suggestions.append(
                 self.create_item(
-                    category=self.ADD_TODO,
+                    category=self.ADD_TODO_CAT,
                     label = "Add '{}' as todo".format(user_input),
                     short_desc=target,
                     target=target,
@@ -183,17 +207,57 @@ class todo_markdown(kp.Plugin):
                     loop_on_suggest = False
                 )
             )
-            
+        for suggestion in suggestions:
+            self.dbg(suggestion.target())
+            self.dbg(suggestion.category())
+
         self.set_suggestions(suggestions, kp.Match.DEFAULT, kp.Sort.NONE)
 
     def on_execute(self, item, action):
-        pass
+        if item.category() == self.ADD_TODO_CAT:
+            self.dbg("CREATE TODO")
+
+        if item and item.category() == self.TODO_CAT:
+            self.dbg(item.category())
+            if action and action.name() == self.FINISH_TODO_NAME:
+                self.dbg("Finish TODO")
+            if action and action.name() == self.DELETE_TODO_NAME:
+                self.dbg("Delete TODO")
+            if action and action.name() == self.EDIT_TODO_NAME:
+                self.dbg("Edit TODO")
+
 
     def on_activated(self):
-        pass
+        f = open("c:\TEST\keypirinha-todo-markdown\src\lib\sample.md", "r")
+        markdown = f.read()
+
+        todos = self._fetch_all_open_todos(markdown)
+        self.dbg(todos)
+        for todo in todos:
+            self._todos.append(self.create_suggestion(
+                todo.split("]")[1]
+            ))
 
     def on_deactivated(self):
         pass
 
     def on_events(self, flags):
         pass
+
+    def _fetch_all_todos(self, markdown):
+        regex = r'\[[[Xx ]*\].+'
+        return re.findall(regex, markdown)
+
+    def _fetch_all_open_todos(self, markdown):
+        regex = r'\[[[ ]*\].+'
+        return re.findall(regex, markdown)
+
+    def create_suggestion(self, item):
+        return self.create_item(
+            category = self.TODO_CAT,
+            label = item,
+            short_desc = "",
+            target = item.strip().format(q = item.strip()),
+            args_hint = kp.ItemArgsHint.FORBIDDEN,
+            hit_hint = kp.ItemHitHint.IGNORE,
+        )
