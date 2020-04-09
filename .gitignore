@@ -2,3 +2,4 @@
 .vscode/tasks.json
 Keypirinha-todo-markdown.code-workspace
 *.keypirinha-package
+.vscode/settings.json
