@@ -183,18 +183,7 @@ class todo_markdown(kp.Plugin):
                     loop_on_suggest = False
                 )
             )
-            suggestions.append(
-                self.create_item(
-                    category=self.ADD_TODO,
-                    label = "Loop '{}' as todo".format(user_input),
-                    short_desc=target,
-                    target=target + "asd",
-                    args_hint = kp.ItemArgsHint.FORBIDDEN,
-                    hit_hint = kp.ItemHitHint.IGNORE,
-                    loop_on_suggest = True
-                )
-            )
-
+            
         self.set_suggestions(suggestions, kp.Match.DEFAULT, kp.Sort.NONE)
 
     def on_execute(self, item, action):
