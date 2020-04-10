@@ -39,12 +39,12 @@
 
 
 
-#   TODO: Checkout MovieDB plugin! It has manage to get about the structure I want
 
-import re
+import fileinput
 import keypirinha as kp
 import keypirinha_util as kpu
 import keypirinha_net as kpnet
+import re
 
 class todo_markdown(kp.Plugin):
     """
@@ -91,7 +91,7 @@ class todo_markdown(kp.Plugin):
             
     ]
 
-    _path_to_file = "c:\TEST\keypirinha-todo-markdown\src\lib\sample.md"
+    _path_to_file = "c:\TEST\keypirinha-todo-markdown\sample.md"
 
     def __init__(self):
         super().__init__()
@@ -156,9 +156,6 @@ class todo_markdown(kp.Plugin):
                     loop_on_suggest = False
                 )
             )
-        for suggestion in suggestions:
-            self.dbg(suggestion.target())
-            self.dbg(suggestion.category())
 
         self.set_suggestions(suggestions, kp.Match.DEFAULT, kp.Sort.NONE)
 
@@ -167,9 +164,10 @@ class todo_markdown(kp.Plugin):
             self.dbg("CREATE TODO")
 
         if item and item.category() == self.TODO_CAT:
-            self.dbg(item.category())
+            self.dbg(item.label())
             if action and action.name() == self.FINISH_TODO_NAME:
                 self.dbg("Finish TODO")
+                self._finish_todo(item.label())
             if action and action.name() == self.DELETE_TODO_NAME:
                 self.dbg("Delete TODO")
             if action and action.name() == self.EDIT_TODO_NAME:
@@ -177,15 +175,15 @@ class todo_markdown(kp.Plugin):
 
 
     def on_activated(self):
-        f = open("c:\TEST\keypirinha-todo-markdown\sample.md", "r")
-        markdown = f.read()
+        with open(self._path_to_file, "r", encoding="utf-8") as f:
+            markdown = f.read()
 
-        todos = self._fetch_all_open_todos(markdown)
-        self.dbg(todos)
-        for todo in todos:
-            self._todos.append(self.create_suggestion(
-                todo.split("]")[1]
-            ))
+            todos = self._fetch_all_open_todos(markdown)
+            
+            for todo in todos:
+                self._todos.append(self._create_suggestion(
+                    todo.split("]")[1]
+                ))
 
     def on_deactivated(self):
         pass
@@ -201,7 +199,17 @@ class todo_markdown(kp.Plugin):
         regex = r'\[[[ ]*\].+'
         return re.findall(regex, markdown)
 
-    def create_suggestion(self, item):
+    def _finish_todo(self, todo):
+        try:
+            for line in fileinput.input(self._path_to_file, inplace=True):
+                if todo in line:
+                    print(line.replace("[ ]", "[X]", 1), end = '')
+                else:
+                    print(line, end = '')
+        except Exception as ex:
+            print(ex)
+            
+    def _create_suggestion(self, item):
         return self.create_item(
             category = self.TODO_CAT,
             label = item,
