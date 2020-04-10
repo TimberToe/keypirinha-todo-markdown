@@ -102,57 +102,6 @@ class todo_markdown(kp.Plugin):
         #kp.shell_execute # Executes/opens file. Might be used to open the markdown-file
         self._debug = True
 
-        self._todos = [
-            self.create_item(
-                category=self.TODO_CAT,
-                label="Fix 'Add Todo'",
-                short_desc="",
-                target="todo_1",
-                args_hint=kp.ItemArgsHint.FORBIDDEN,
-                hit_hint=kp.ItemHitHint.IGNORE,
-            ),
-            self.create_item(
-                category=self.TODO_CAT,
-                label="Fix 'Delete' Todo",
-                short_desc="It should be an action",
-                target="todo_2",
-                args_hint=kp.ItemArgsHint.FORBIDDEN,
-                hit_hint=kp.ItemHitHint.IGNORE,
-            ),
-            self.create_item(
-                category=self.TODO_CAT,
-                label="Add Finish action",
-                short_desc="",
-                target="todo_3",
-                args_hint=kp.ItemArgsHint.FORBIDDEN,
-                hit_hint=kp.ItemHitHint.IGNORE,
-            ),
-            self.create_item(
-                category=self.TODO_CAT,
-                label="Add a 'Assign to another' action",
-                short_desc="It will copy and delete",
-                target="todo_4",
-                args_hint=kp.ItemArgsHint.FORBIDDEN,
-                hit_hint=kp.ItemHitHint.IGNORE,
-            ),
-            self.create_item(
-                category=self.TODO_CAT,
-                label="What happens if they have the same target?",
-                short_desc="They need different targets otherwise they are not shown",
-                target="todo_5",
-                args_hint=kp.ItemArgsHint.FORBIDDEN,
-                hit_hint=kp.ItemHitHint.IGNORE,
-            ),
-            self.create_item(
-                category=self.TODO_CAT,
-                label="Test having a 'load more'",
-                short_desc="Do we want to encurage that behavior. Maybe a setting?",
-                target="todo_6",
-                args_hint=kp.ItemArgsHint.FORBIDDEN,
-                hit_hint=kp.ItemHitHint.IGNORE,
-            ),
-        ]
-
         self.set_actions(self.TODO_CAT,[
             self.create_action(
                 name=self.FINISH_TODO_NAME,
@@ -228,7 +177,7 @@ class todo_markdown(kp.Plugin):
 
 
     def on_activated(self):
-        f = open("c:\TEST\keypirinha-todo-markdown\src\lib\sample.md", "r")
+        f = open("c:\TEST\keypirinha-todo-markdown\sample.md", "r")
         markdown = f.read()
 
         todos = self._fetch_all_open_todos(markdown)
