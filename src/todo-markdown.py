@@ -178,6 +178,7 @@ class todo_markdown(kp.Plugin):
         with open(self._filepath, "r", encoding="utf-8") as f:
             markdown = f.read()
 
+            self._todos = []
             todos = self._fetch_all_open_todos(markdown)
             
             for todo in todos:
