@@ -91,7 +91,7 @@ class todo_markdown(kp.Plugin):
             
     ]
 
-    _path_to_file = "c:\TEST\keypirinha-todo-markdown\sample.md"
+    _filepath = "c:\TEST\keypirinha-todo-markdown\sample.md"
 
     def __init__(self):
         super().__init__()
@@ -175,7 +175,7 @@ class todo_markdown(kp.Plugin):
 
 
     def on_activated(self):
-        with open(self._path_to_file, "r", encoding="utf-8") as f:
+        with open(self._filepath, "r", encoding="utf-8") as f:
             markdown = f.read()
 
             todos = self._fetch_all_open_todos(markdown)
@@ -201,13 +201,19 @@ class todo_markdown(kp.Plugin):
 
     def _finish_todo(self, todo):
         try:
-            for line in fileinput.input(self._path_to_file, inplace=True):
-                if todo in line:
-                    print(line.replace("[ ]", "[X]", 1), end = '')
-                else:
-                    print(line, end = '')
-        except Exception as ex:
-            print(ex)
+            with open(self._filepath, 'r', encoding="utf-8") as f:
+                newlines = []
+                for line in f.readlines():
+                    if todo in line:
+                        newlines.append(line.replace("[ ]", "[X]", 1))
+                    else:
+                        newlines.append(line)
+
+            with open(self._filepath, 'w', encoding="utf-8") as f:
+                for line in newlines:
+                    f.write(line)
+        except Exception as e:
+            print("Error:", e)
             
     def _create_suggestion(self, item):
         return self.create_item(
