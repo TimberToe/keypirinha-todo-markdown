@@ -162,6 +162,7 @@ class todo_markdown(kp.Plugin):
     def on_execute(self, item, action):
         if item.category() == self.ADD_TODO_CAT:
             self.dbg("CREATE TODO")
+            self._add_todo(item.short_desc())
 
         if item and item.category() == self.TODO_CAT:
             self.dbg(item.label())
@@ -215,7 +216,14 @@ class todo_markdown(kp.Plugin):
                     f.write(line)
         except Exception as e:
             print("Error:", e)
-            
+
+    def _add_todo(self, todo):
+        try:
+            with open(self._filepath, 'a', encoding="utf-8") as f: 
+                f.write("\n- [ ] {}".format(todo))
+        except Exception as e:
+            print("Error", e)
+
     def _create_suggestion(self, item):
         return self.create_item(
             category = self.TODO_CAT,
