@@ -44,6 +44,7 @@ import fileinput
 import keypirinha as kp
 import keypirinha_util as kpu
 import keypirinha_net as kpnet
+import os
 import re
 
 class todo_markdown(kp.Plugin):
@@ -87,20 +88,29 @@ class todo_markdown(kp.Plugin):
     EDIT_TODO_NAME = "edit"
     EDIT_TODO_LABEL = "Edit the Todo"
 
-    _todos = [
-            
-    ]
-
-    _filepath = "c:\TEST\keypirinha-todo-markdown\sample.md"
+    _todos = []
 
     def __init__(self):
         super().__init__()
+
+    def _read_config(self):
+        settings = self.load_settings()
+
+        # It's the folder FOLDERID_Documents ("%USERPROFILE%\Documents")
+        # https://docs.microsoft.com/sv-se/windows/win32/shell/knownfolderid?redirectedfrom=MSDN
+        default_path = kpu.shell_known_folder_path("{FDD39AD0-238F-46AF-ADB4-6C85480369C7}")
+        self._filepath = settings.get_stripped("file_path", "main", default_path)
+        
+        if os.path.isdir(self._filepath):
+            self._filepath = os.path.join(self._filepath, "todo.md")
 
 
     def on_start(self):
         #kp.live_package_dir # Find out where the live package dir is
         #kp.shell_execute # Executes/opens file. Might be used to open the markdown-file
+        #chardet_slurp #reads file?
         self._debug = True
+        self._read_config()
 
         self.set_actions(self.TODO_CAT,[
             self.create_action(
@@ -177,26 +187,23 @@ class todo_markdown(kp.Plugin):
 
 
     def on_activated(self):
-        with open(self._filepath, "r", encoding="utf-8") as f:
-            markdown = f.read()
+        try:
+            with open(self._filepath, "r", encoding="utf-8") as f:
+                markdown = f.read()
 
-            self._todos = []
-            todos = self._fetch_all_open_todos(markdown)
-            
-            for todo in todos:
-                self._todos.append(self._create_suggestion(
-                    todo.split("]")[1]
-                ))
-
-    def on_deactivated(self):
-        pass
+                self._todos = []
+                todos = self._fetch_all_open_todos(markdown)
+                
+                for todo in todos:
+                    self._todos.append(self._create_suggestion(
+                        todo.split("]")[1]
+                    ))
+        except FileNotFoundError as e:
+            self.warn(e)
 
     def on_events(self, flags):
-        pass
-
-    def _fetch_all_todos(self, markdown):
-        regex = r'\[[[Xx ]*\].+'
-        return re.findall(regex, markdown)
+        if flags & kp.Events.PACKCONFIG:
+            self._read_config()
 
     def _fetch_all_open_todos(self, markdown):
         regex = r'\[[[ ]*\].+'
@@ -220,7 +227,7 @@ class todo_markdown(kp.Plugin):
 
     def _add_todo(self, todo):
         try:
-            with open(self._filepath, 'a', encoding="utf-8") as f: 
+            with open(self._filepath, 'a+', encoding="utf-8") as f: 
                 f.write("\n- [ ] {}".format(todo))
         except Exception as e:
             print("Error", e)
