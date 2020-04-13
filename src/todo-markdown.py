@@ -46,6 +46,7 @@ import keypirinha_util as kpu
 import keypirinha_net as kpnet
 import os
 import re
+import textwrap
 
 class todo_markdown(kp.Plugin):
     """
@@ -246,10 +247,14 @@ class todo_markdown(kp.Plugin):
             print("Error:", e)
 
     def _create_suggestion(self, item):
+
+        text = textwrap.wrap(item, width=50)
+        label = text.pop(0)
+
         return self.create_item(
             category = self.TODO_CAT,
-            label = item,
-            short_desc = "",
+            label = label,
+            short_desc = "".join(text),
             target = item.strip().format(q = item.strip()),
             args_hint = kp.ItemArgsHint.FORBIDDEN,
             hit_hint = kp.ItemHitHint.IGNORE,
