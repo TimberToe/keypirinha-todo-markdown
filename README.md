@@ -1,7 +1,5 @@
 # Keypirinha Plugin: todo-markdown
 
-**NOTE: I have barely started development and it is far from working**
-
 This is todo-markdown, a plugin for the
 [Keypirinha](http://keypirinha.com) launcher.
 
@@ -33,74 +31,26 @@ move it to the `InstalledPackage` folder located at:
 
 ## Usage
 
-
 You will be able to:
  - Add todos
  - Finish todos
- - List top todos
- - Open the markdown file that stores the todos
+ - Delete
+ - List todos
 
-**TODO:** list the items, if any, inserted to the Catalog by the plugin(s) of
-this package. Some plugins only make suggestions, in which case a description of
-what kind of suggestions are to be expected by the user may help.
-
-### Gerkin
-
-Feature: Manage Todos in the Markdown file
- - Example: Load todos on start up
- - Example: Load todos on open of application?
- - Example: No file found
- - Feature: Parse Markdown file
-   - Example: Malformed file
-   - Example: Empty file
-   - Example: HUGE file??
-Feature: Managing Todos
- - Feature: Add todo
- - Feature: List todo
- - Feature: Finish todo
- - Feature: Delete todo
- - Feature: Load more?
-Feature: Copy and delete (Assign to another)
-Feature: Open markdown file
-Feature: Change settings
- - Example: Change path to Markdown file
- - Example: Change keywords?
- - 
-
-
-## Change Log
-
-**TODO:** describe notable changes for each release. Below is a template for
-version 1.0.
-
-### v0.1
-
-* Added foo item
-* Fixed bug that was doing bad things when item "bar" was selected
+Adds a top catalog item "TODO" where everything else is located.
+Search for "todo" and press tab.
+Under it you should see your todos and search among them.
+If your searchterm doesn't exist the option to create a new todo will be presented.
+Manage a specific todo by selecting it and open its actions, default by using tab.
 
 
 ## License
-
-**TODO:** recommended section. Below is an example that goes with the default
-LICENSE file (MIT license). Do not forget to add your name in the `LICENSE`
-file!
-
 This package is distributed under the terms of the MIT license.
 
 
-## Credits
-
-**TODO:** optional section.
-
-
 ## Contribute
-
-**TODO:** optional section. Below is a template example, based on the one found
-in Keypirinha's Packages repository.
-
 1. Check for open issues or open a fresh issue to start a discussion around a
    feature idea or a bug.
-2. Fork this repository on GitHub to start making your changes to the **dev**
-   branch.
+2. Fork this repository on GitHub to start making your changes
 3. Send a pull request.
 4. Add yourself to the *Contributors* section below (or create it if needed)!

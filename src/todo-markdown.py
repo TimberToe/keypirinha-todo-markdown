@@ -9,31 +9,10 @@ import textwrap
 
 class todo_markdown(kp.Plugin):
     """
-    One-line description of your plugin.
+    Manages todos in a Markdown file
 
-    This block is a longer and more detailed description of your plugin that may
-    span on several lines, albeit not being required by the application.
-
-    You may have several plugins defined in this module. It can be useful to
-    logically separate the features of your package. All your plugin classes
-    will be instantiated by Keypirinha as long as they are derived directly or
-    indirectly from :py:class:`keypirinha.Plugin` (aliased ``kp.Plugin`` here).
-
-    In case you want to have a base class for your plugins, you must prefix its
-    name with an underscore (``_``) to indicate Keypirinha it is not meant to be
-    instantiated directly.
-
-    In rare cases, you may need an even more powerful way of telling Keypirinha
-    what classes to instantiate: the ``__keypirinha_plugins__`` global variable
-    may be declared in this module. It can be either an iterable of class
-    objects derived from :py:class:`keypirinha.Plugin`; or, even more dynamic,
-    it can be a callable that returns an iterable of class objects. Check out
-    the ``StressTest`` example from the SDK for an example.
-
-    Up to 100 plugins are supported per module.
-
-    More detailed documentation at: http://keypirinha.com/api/plugin.html
-
+    Plugin that gives you the ability to 
+    add/finish/delete todos that are stored in a markdown file
     """
 
     TODO_CAT = kp.ItemCategory.USER_BASE + 10
@@ -69,7 +48,6 @@ class todo_markdown(kp.Plugin):
             self._filepath = os.path.join(self._filepath, "todo.md")
 
     def on_start(self):
-        # chardet_slurp #reads file?
         self._debug = True
         self._read_config()
 
@@ -181,14 +159,14 @@ class todo_markdown(kp.Plugin):
                 for line in newlines:
                     f.write(line)
         except Exception as e:
-            print("Error:", e)
+            self.err(e)
 
     def _add_todo(self, todo):
         try:
             with open(self._filepath, 'a+', encoding="utf-8") as f:
                 f.write("\n- [ ] {}".format(todo))
         except Exception as e:
-            print("Error", e)
+            self.err(e)
 
     def _delete_todo(self, todo):
         try:
@@ -201,7 +179,7 @@ class todo_markdown(kp.Plugin):
                 for line in newlines:
                     f.write(line)
         except Exception as e:
-            print("Error:", e)
+            self.err(e)
 
     def _create_suggestion(self, item):
 
