@@ -171,6 +171,7 @@ class todo_markdown(kp.Plugin):
                 self._finish_todo(item.label())
             if action and action.name() == self.DELETE_TODO_NAME:
                 self.dbg("Delete TODO")
+                self._delete_todo
             if action and action.name() == self.EDIT_TODO_NAME:
                 self.dbg("Edit TODO")
 
@@ -223,6 +224,19 @@ class todo_markdown(kp.Plugin):
                 f.write("\n- [ ] {}".format(todo))
         except Exception as e:
             print("Error", e)
+
+    def _delete_todo(self, todo):
+        try:
+            with open(self._filepath, 'r', encoding="utf-8") as f:
+                newlines = []
+                for line in f.readlines():
+                    if todo not in line:
+                        newlines.append(line)
+            with open(self._filepath, 'w', encoding="utf-8") as f:
+                for line in newlines:
+                    f.write(line)
+        except Exception as e:
+            print("Error:", e)
 
     def _create_suggestion(self, item):
         return self.create_item(
