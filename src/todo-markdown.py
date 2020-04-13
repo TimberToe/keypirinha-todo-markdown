@@ -1,45 +1,3 @@
-# Keypirinha launcher (keypirinha.com)
-
-# 
-#    In on_start I should 
-#     - Read config
-#
-#    In on_catalog I should
-#     - Read the Markdown file? 
-#       # Might be heavy on each on_catalog.  Needs to be more often than on_start though...
-#     - Add to the catalog:
-#       - Todo
-#         - Add
-#         - Finish
-#         - List
-#         - Open file
-#
-#   In on_events I should:
-#    - Scan the markdown file since the config has changed
-#
-#   In on_suggest under:
-#    - "Todo" I should
-#      - List the top todos
-#    - "Add" I should search todos so that I can see if I'm about to add a double todo
-#       - The top item should always be an "add new todo" that will be executed on enter
-#    - "Finish" I should search todos to find the one I want to finich
-#    - "List" I should directly show a list of *all* todos (if possible)
-#    - "Open file" I should open the markdown file in default editor
-#   
-#   In on_execute I should
-#    - If under "Finish" I should finish the todo
-#    - If under "Add" I should only add a new todo on the "add new todo" otherwise to nothing
-#    - If under "List" I should do nothing on enter
-#    - If under "actions for an item" these actions should be visible:
-#        - Delete
-#        - Finish
-#        - (Keypirinhas normal ones should not be listed)
-
-
-
-
-
-
 import fileinput
 import keypirinha as kp
 import keypirinha_util as kpu
@@ -47,6 +5,7 @@ import keypirinha_net as kpnet
 import os
 import re
 import textwrap
+
 
 class todo_markdown(kp.Plugin):
     """
@@ -76,7 +35,7 @@ class todo_markdown(kp.Plugin):
     More detailed documentation at: http://keypirinha.com/api/plugin.html
 
     """
-    
+
     TODO_CAT = kp.ItemCategory.USER_BASE + 10
     ADD_TODO_CAT = kp.ItemCategory.USER_BASE + 20
 
@@ -85,7 +44,7 @@ class todo_markdown(kp.Plugin):
 
     DELETE_TODO_NAME = "delete"
     DELETE_TODO_LABEL = "Delete the Todo"
-    
+
     EDIT_TODO_NAME = "edit"
     EDIT_TODO_LABEL = "Edit the Todo"
 
@@ -99,21 +58,22 @@ class todo_markdown(kp.Plugin):
 
         # It's the folder FOLDERID_Documents ("%USERPROFILE%\Documents")
         # https://docs.microsoft.com/sv-se/windows/win32/shell/knownfolderid?redirectedfrom=MSDN
-        default_path = kpu.shell_known_folder_path("{FDD39AD0-238F-46AF-ADB4-6C85480369C7}")
-        self._filepath = settings.get_stripped("file_path", "main", default_path)
-        
+        default_path = kpu.shell_known_folder_path(
+            "{FDD39AD0-238F-46AF-ADB4-6C85480369C7}"
+        )
+        self._filepath = settings.get_stripped(
+            "file_path", "main", default_path
+        )
+
         if os.path.isdir(self._filepath):
             self._filepath = os.path.join(self._filepath, "todo.md")
 
-
     def on_start(self):
-        #kp.live_package_dir # Find out where the live package dir is
-        #kp.shell_execute # Executes/opens file. Might be used to open the markdown-file
-        #chardet_slurp #reads file?
+        # chardet_slurp #reads file?
         self._debug = True
         self._read_config()
 
-        self.set_actions(self.TODO_CAT,[
+        self.set_actions(self.TODO_CAT, [
             self.create_action(
                 name=self.FINISH_TODO_NAME,
                 label=self.FINISH_TODO_LABEL,
@@ -131,7 +91,6 @@ class todo_markdown(kp.Plugin):
             )
         ])
 
-
     def on_catalog(self):
         catalog = []
 
@@ -148,23 +107,22 @@ class todo_markdown(kp.Plugin):
 
     def on_suggest(self, user_input, items_chain):
 
-
         if not items_chain:
             return
-        
+
         suggestions = self._todos[:]
 
         if user_input:
-            target = user_input.strip().format(q = user_input.strip())
+            target = user_input.strip().format(q=user_input.strip())
             suggestions.append(
                 self.create_item(
                     category=self.ADD_TODO_CAT,
-                    label = "Add '{}' as todo".format(user_input),
+                    label="Add '{}' as todo".format(user_input),
                     short_desc=target,
                     target=target,
-                    args_hint = kp.ItemArgsHint.FORBIDDEN,
-                    hit_hint = kp.ItemHitHint.IGNORE,
-                    loop_on_suggest = False
+                    args_hint=kp.ItemArgsHint.FORBIDDEN,
+                    hit_hint=kp.ItemHitHint.IGNORE,
+                    loop_on_suggest=False
                 )
             )
 
@@ -186,7 +144,6 @@ class todo_markdown(kp.Plugin):
             if action and action.name() == self.EDIT_TODO_NAME:
                 self.dbg("Edit TODO")
 
-
     def on_activated(self):
         try:
             with open(self._filepath, "r", encoding="utf-8") as f:
@@ -194,7 +151,7 @@ class todo_markdown(kp.Plugin):
 
                 self._todos = []
                 todos = self._fetch_all_open_todos(markdown)
-                
+
                 for todo in todos:
                     self._todos.append(self._create_suggestion(
                         todo.split("]")[1]
@@ -228,7 +185,7 @@ class todo_markdown(kp.Plugin):
 
     def _add_todo(self, todo):
         try:
-            with open(self._filepath, 'a+', encoding="utf-8") as f: 
+            with open(self._filepath, 'a+', encoding="utf-8") as f:
                 f.write("\n- [ ] {}".format(todo))
         except Exception as e:
             print("Error", e)
@@ -252,10 +209,10 @@ class todo_markdown(kp.Plugin):
         label = text.pop(0)
 
         return self.create_item(
-            category = self.TODO_CAT,
-            label = label,
-            short_desc = "".join(text),
-            target = item.strip().format(q = item.strip()),
-            args_hint = kp.ItemArgsHint.FORBIDDEN,
-            hit_hint = kp.ItemHitHint.IGNORE,
+            category=self.TODO_CAT,
+            label=label,
+            short_desc="".join(text),
+            target=item.strip().format(q=item.strip()),
+            args_hint=kp.ItemArgsHint.FORBIDDEN,
+            hit_hint=kp.ItemHitHint.IGNORE,
         )
