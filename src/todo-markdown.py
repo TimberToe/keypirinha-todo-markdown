@@ -118,7 +118,7 @@ class todo_markdown(kp.Plugin):
                 self._finish_todo(item.label())
             if action and action.name() == self.DELETE_TODO_NAME:
                 self.dbg("Delete TODO")
-                self._delete_todo
+                self._delete_todo(item.label())
             if action and action.name() == self.EDIT_TODO_NAME:
                 self.dbg("Edit TODO")
 
