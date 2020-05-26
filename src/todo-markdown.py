@@ -57,7 +57,7 @@ class todo_markdown(kp.Plugin):
             self.create_action(
                 name=self.DELETE_TODO_NAME,
                 label=self.DELETE_TODO_LABEL,
-                short_desc="Deletes the todo completly"
+                short_desc="Removes the todo completely"
             ),
         ])
 
@@ -87,7 +87,7 @@ class todo_markdown(kp.Plugin):
             suggestions.append(
                 self.create_item(
                     category=self.ADD_TODO_CAT,
-                    label="Add '{}' as todo".format(user_input),
+                    label="Add as todo: '{}'".format(user_input),
                     short_desc=target,
                     target=target,
                     args_hint=kp.ItemArgsHint.FORBIDDEN,
