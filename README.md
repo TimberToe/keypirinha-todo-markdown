@@ -3,9 +3,9 @@
 This is todo-markdown, a plugin for the
 [Keypirinha](http://keypirinha.com) launcher.
 
-A plugin to easily add/finish/list todos from a Markdown file.
+A plugin to easily add/finish/list todos in a Markdown file.
 
-I use a markdown file to jolt down small todos that don't fit in our ticket system.
+I use a markdown file to jolt down small reminders over the day.
 Since I use Keypirinha for everything else, why not as as shortcut to my todo list!
 
 Since it is an markdown file it is easy to sync between computers through your cloud storage.
@@ -13,9 +13,7 @@ It is easy to read and convert to another format if needed
 
 ## Download
 
-**TODO:** indicate where the latest `.keypirinha-package` file can be
-downloaded. For example a URL to the `releases` list like:
-https://github.com/USERNAME/keypirinha-PACKAGE/releases
+Download latest from [Releases](https://github.com/TimberToe/keypirinha-todo-markdown/releases)
 
 
 ## Install
@@ -34,15 +32,11 @@ move it to the `InstalledPackage` folder located at:
 You will be able to:
  - Add todos
  - Finish todos
- - Delete
+ - Remove todos
  - List todos
 
-Adds a top catalog item "TODO" where everything else is located.
-Search for "todo" and press tab.
-Under it you should see your todos and search among them.
-If your searchterm doesn't exist the option to create a new todo will be presented.
-Manage a specific todo by selecting it and open its actions, default by using tab.
-
+Start by searching for "Todo" i Keypirinha and you will find the top cataglog item "Todo" that everything is filed under. 
+Select it to see a list of all the available todos. The list is searchable and if your search term doesn't exist you will be given the option to create a new todo. Manage individual todos by selecting one and pressing tab.
 
 ## License
 This package is distributed under the terms of the MIT license.
