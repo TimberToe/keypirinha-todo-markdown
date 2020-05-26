@@ -45,7 +45,7 @@ class todo_markdown(kp.Plugin):
             self._filepath = os.path.join(self._filepath, "todo.md")
 
     def on_start(self):
-        self._debug = True
+        self._debug = False
         self._read_config()
 
         self.set_actions(self.TODO_CAT, [
@@ -100,16 +100,12 @@ class todo_markdown(kp.Plugin):
 
     def on_execute(self, item, action):
         if item.category() == self.ADD_TODO_CAT:
-            self.dbg("CREATE TODO")
             self._add_todo(item.short_desc())
 
         if item and item.category() == self.TODO_CAT:
-            self.dbg(item.label())
             if action and action.name() == self.FINISH_TODO_NAME:
-                self.dbg("Finish TODO")
                 self._finish_todo(item.label())
             if action and action.name() == self.DELETE_TODO_NAME:
-                self.dbg("Delete TODO")
                 self._delete_todo(item.label())
 
     def on_activated(self):
