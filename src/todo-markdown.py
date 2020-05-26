@@ -24,9 +24,6 @@ class todo_markdown(kp.Plugin):
     DELETE_TODO_NAME = "delete"
     DELETE_TODO_LABEL = "Delete the Todo"
 
-    EDIT_TODO_NAME = "edit"
-    EDIT_TODO_LABEL = "Edit the Todo"
-
     _todos = []
 
     def __init__(self):
@@ -62,11 +59,6 @@ class todo_markdown(kp.Plugin):
                 label=self.DELETE_TODO_LABEL,
                 short_desc="Deletes the todo completly"
             ),
-            self.create_action(
-                name=self.EDIT_TODO_NAME,
-                label=self.EDIT_TODO_LABEL,
-                short_desc="Edits the todo"
-            )
         ])
 
     def on_catalog(self):
@@ -119,8 +111,6 @@ class todo_markdown(kp.Plugin):
             if action and action.name() == self.DELETE_TODO_NAME:
                 self.dbg("Delete TODO")
                 self._delete_todo(item.label())
-            if action and action.name() == self.EDIT_TODO_NAME:
-                self.dbg("Edit TODO")
 
     def on_activated(self):
         try:
